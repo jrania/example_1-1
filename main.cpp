@@ -3,14 +3,14 @@
 
 int main()
 {
-    DigitalIn gasDetector(D3);
+    DigitalIn gasDetector(D2);
 
     DigitalOut alarmLed(LED1);
 
     gasDetector.mode(PullDown);
 
     alarmLed = OFF;
-
+    printf("%s\n", "Hello World");
     while (true) {
         if ( gasDetector == ON ) {
             alarmLed = ON;
