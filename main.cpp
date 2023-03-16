@@ -3,7 +3,7 @@
 
 int main()
 {
-    DigitalIn gasDetector(D2);
+    DigitalIn gasDetector(D3);
 
     DigitalOut alarmLed(LED1);
 
