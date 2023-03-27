@@ -20,21 +20,22 @@ int main()
     *       y a un pin digital de salida (alarmLed).
     * @param D2 
     **/
-    DigitalIn gasDetector(D2);
+    gpio_t gasDetector;
+    gpio_init_in(&gasDetector, D2);
 
-    DigitalOut alarmLed(LED1);
+    gpio_t alarmLed;
+    gpio_init_out_ex(&alarmLed, LED1, PullDown);
 
-    gasDetector.mode(PullDown);
 
-    alarmLed = OFF;
+    gpio_write(&alarmLed, OFF);
     printf("%s\n", "Hello World");
     while (true) {
-        if ( gasDetector == ON ) {
-            alarmLed = ON;
+        if ( gpio_read(&gasDetector) == ON ) {
+            gpio_write(&alarmLed, ON);
         }
         
-        if ( gasDetector == OFF ) {
-            alarmLed = OFF;
+        if ( gpio_read(&gasDetector) == OFF ) {
+            gpio_write(&alarmLed, OFF);
         }
     }
 }
