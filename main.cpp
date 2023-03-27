@@ -1,7 +1,7 @@
 /**
 * @file main.cpp
 * @author Sandoval, Raña
-* @date 16/03/2023
+* @date 23/03/2023
 * @section TP 2 B
 * @brief Analizar el código propuesto por la cátedra, detallando las estructuras
 *       características de C++. La propuesta es reemplazar el código para que el
