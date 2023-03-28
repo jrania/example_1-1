@@ -3,7 +3,7 @@
 Prueba
 * @file main.cpp
 * @author Sandoval, Raña
-* @date 16/03/2023
+* @date 23/03/2023
 * @brief Testear una entrada y una salida digital del NUCLEO-F429ZI
 * @details Hay dos carpetas 
 * En Build, está el archivo mbed_config.h donde están definidas las constantes que usa mbed. 
@@ -21,43 +21,71 @@ Prueba
 #include "mbed.h"
 #include "arm_book_lib.h"
 
+bool mensajeEnviado = false;
+
 /**
-* @brief Monitorea el sensor de gas. Si lee un 1 enciende un LED
-*       Antes de iniciar imprime el mensaje "Hello World"
+* @brief    Monitorea el sensor de gas. Si lee un 1 enciende un LED
+*           Antes de iniciar imprime el mensaje "Hello World"
+* @param    Ninguno
+* @return   Ninguno
 */
 
 int main()
 {
+
     /**
-    * @brief Declarar las variables correspondientes a un pin digital de entrada (gasDetector)
-    *       y a un pin digital de salida (alarmLed).
-    * @param D2 
-    **/
+    * @brief    Definición del objeto gasDetector como clase DigitalIn
+    * @param    D2
+    * @details  gasDetector se define como un objeto de la clase DigitalIn a la que se le
+    *           envía como parámetro D2 que define la dirección de memoria 0x5F en la libreria
+    *           mbed-os>targets>TARGET_STM>TARGET_STM32F4>TARGET_NUCLEO_F439ZI>PinNames.h
+    *           El constructor de la clase DigitalIn llama a la función gpio_init_in() que
+    *           ascocia la dirección de memoria 0x5F con una estructura gpio_t y la configura
+    *           como pin de entrada.
+    */
+    DigitalIn gasDetector(D2);
 
-    DigitalIn gasDetector(D2); //Definición del objeto gasDetector como clase DigitalIn
+    /**
+    * @brief    Definición del objeto alarmLed como clase DigitalOut
+    * @param    LED1
+    * @details  El procedimiento es equivalente al realizado para gasDetector pero con la clase
+    *           DigitalOut. Se declara alarmLed como un objeto de la clase DigitalOut pasando
+    *           LED1 como argumento, cuya dirección de memoria es 0x10.
+    *           El constructor de la case llama a la función gpio_init_out() que inicializa el pin
+    *           como pin de salida.
+    */
+    DigitalOut alarmLed(LED1);
 
-    DigitalOut alarmLed(LED1); //Definición del objeto alarmLed como clase DigitalOut
-
-    gasDetector.mode(PullDown); //Dentro de la clase DigitalIn se encuentra la función mode
-                                //Que modifica el pin físico como PulllDown
-    bool mensajeEnviado = false;
+    /**
+    * @brief    Se llama al método mode() de la clase DigitalOut para configurar el pin de salida
+    *           asociado al objeto alarmLed como PullDown.
+    * @param PullDown
+    */
+    gasDetector.mode(PullDown); 
 
     alarmLed = OFF;
     printf("%s\n", "Hello World");
     while (true) {
-        if ( gasDetector == ON ) { //En la clase DigitalIn está definido el operador int
-                                    //que se compara con ON. El operador int devuelve el resultado
-                                    //de la función read() que lee el estado físico del pin
-            alarmLed = ON;  // Se utiliza una sobrecarga para alarmLed que llama a la función write
-                            // que modifica el estado del pin físico
+
+        /**
+        * @brief    El loop while(true) utiliza los operadores de sobrecarga definidos en las clases
+        *           DigitalIn y DigitalOut.
+        * @details  En la clase DigitalIn se define el operador int que permite comparar el estado
+        *           del objeto con enteros. En la clase DigitalOut, además del operador int se define
+        *           el operador "=" que modifica el estado del pin al igualar el objeto a un 1 o un 0.
+        */
+        if ( gasDetector == ON ) {  // Se copara el pin gasDetector con ON = 1
+            alarmLed = ON;  // Se utiliza una sobrecarga para alarmLed que llama a la función write()
+                            // que modifica el estado del pin físico a 1.
             if(mensajeEnviado == false){
                 printf("%s\n", "Se detectó gas y se encendió la alarma");
                 mensajeEnviado = true;
             }
         }
         
-        if ( gasDetector == OFF ) {
-            alarmLed = OFF;
+        if ( gasDetector == OFF ) { // Se copara el pin gasDetector con OFF = 0
+            alarmLed = OFF; // Se utiliza una sobrecarga para alarmLed que llama a la función write()
+                            // que modifica el estado del pin físico a 0.
             if(mensajeEnviado == true){
                 printf("%s\n", "Se dejó de detectar gas y se apagó la alarma");
                 mensajeEnviado = false;
